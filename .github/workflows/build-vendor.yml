@@ -27,7 +27,7 @@ jobs:
           php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 
       - name: Install dependencies
-        run: composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist || true
+        run: composer install --no-dev --no-scripts --ignore-platform-reqs --optimize-autoloader --no-interaction --prefer-dist || true
 
       - name: Create vendor.zip
         run: zip -r vendor.zip vendor
