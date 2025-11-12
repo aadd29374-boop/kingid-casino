@@ -1,0 +1,42 @@
+name: Build vendor and release
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v4
+        with:
+          php-version: '8.3'
+          extensions: mbstring, mysqli, pdo_mysql, gd, zip
+          coverage: none
+
+      - name: Install Composer
+        run: |
+          php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+          php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+
+      - name: Install dependencies
+        run: composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+
+      - name: Create vendor.zip
+        run: zip -r vendor.zip vendor
+
+      - name: Release vendor.zip
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: vendor-${{ github.run_number }}
+          name: Vendor Build ${{ github.run_number }}
+          files: vendor.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
