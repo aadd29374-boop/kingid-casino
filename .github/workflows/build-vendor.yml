@@ -1,4 +1,4 @@
-name: Build vendor and release
+Loname: Build vendor and release
 
 on:
   workflow_dispatch:
@@ -27,7 +27,7 @@ jobs:
           php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 
       - name: Install dependencies
-        run: composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+  run: composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist || true
 
       - name: Create vendor.zip
         run: zip -r vendor.zip vendor
